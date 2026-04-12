@@ -1,0 +1,127 @@
+:root {
+  --cgwd-placeholder-bg: rgba(148, 163, 184, 0.08);
+  --cgwd-placeholder-border: rgba(148, 163, 184, 0.18);
+  --cgwd-overlay-bg: rgba(15, 23, 42, 0.72);
+  --cgwd-overlay-border: rgba(148, 163, 184, 0.22);
+  --cgwd-accent: #7dd3fc;
+}
+
+.cgwd-placeholder {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+  background: linear-gradient(
+    180deg,
+    var(--cgwd-placeholder-bg),
+    rgba(148, 163, 184, 0.03)
+  );
+  border: 1px dashed var(--cgwd-placeholder-border);
+  border-radius: 14px;
+  box-sizing: border-box;
+  margin: 6px 0;
+  padding: 10px 12px;
+  color: rgba(148, 163, 184, 0.95);
+  cursor: pointer;
+}
+
+.cgwd-placeholder:hover {
+  border-color: rgba(125, 211, 252, 0.55);
+  background: linear-gradient(
+    180deg,
+    rgba(125, 211, 252, 0.08),
+    rgba(148, 163, 184, 0.03)
+  );
+}
+
+.cgwd-placeholder-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cgwd-placeholder-label {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+
+.cgwd-placeholder-summary {
+  font-size: 11px;
+  line-height: 1.35;
+  opacity: 0.84;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cgwd-placeholder-hint {
+  font-size: 11px;
+  opacity: 0.88;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+.cgwd-placeholder[data-cgwd-restoring="1"] .cgwd-placeholder-hint {
+  color: var(--cgwd-accent);
+}
+
+.cgwd-code-wrap {
+  position: relative;
+}
+
+.cgwd-code-wrap.cgwd-code-collapsed pre {
+  max-height: var(--cgwd-code-preview-height, 30rem) !important;
+  overflow: hidden !important;
+}
+
+.cgwd-code-wrap.cgwd-code-collapsed::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 38px;
+  height: 96px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0), rgba(15, 23, 42, 0.92));
+}
+
+.cgwd-code-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--cgwd-overlay-border);
+  background: var(--cgwd-overlay-bg);
+  color: white;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.cgwd-debug-overlay {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483647;
+  padding: 10px 12px;
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  background: rgba(15, 23, 42, 0.82);
+  color: white;
+  border: 1px solid var(--cgwd-overlay-border);
+  font: 12px/1.35 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.28);
+  min-width: 250px;
+}
+
+.cgwd-debug-overlay strong {
+  color: var(--cgwd-accent);
+}

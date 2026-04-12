@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "ChatGPT Swift",
+  "version": "0.4.1",
+  "description": "Virtualizes long ChatGPT conversations, auto-restores nearby history, and reduces long-session render cost.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://chatgpt.com/*",
+    "https://www.chat.com/*",
+    "https://chat.openai.com/*"
+  ],
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  "action": {
+    "default_title": "ChatGPT Swift",
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://www.chat.com/*",
+        "https://chat.openai.com/*"
+      ],
+      "js": [
+        "content_script.js"
+      ],
+      "css": [
+        "styles.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

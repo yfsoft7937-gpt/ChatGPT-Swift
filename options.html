@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ChatGPT Swift Options</title>
+  <style>
+    body {
+      font: 14px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #020617;
+      color: #e2e8f0;
+      margin: 0;
+    }
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 40px;
+    }
+    h1 { margin-top: 0; }
+    .card {
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 140px;
+      gap: 12px 18px;
+      align-items: center;
+    }
+    label { font-weight: 600; }
+    input[type="number"] {
+      width: 120px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      background: rgba(15, 23, 42, 0.5);
+      color: #fff;
+    }
+    input[type="checkbox"] { transform: scale(1.1); }
+    .actions { display: flex; gap: 10px; margin-top: 18px; }
+    button {
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      background: rgba(30, 41, 59, 0.75);
+      color: white;
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      font: inherit;
+    }
+    .muted { color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>ChatGPT Swift</h1>
+    <p class="muted">Tune how aggressively the extension windows long conversations and auto-restores nearby messages.</p>
+
+    <section class="card">
+      <div class="grid">
+        <label for="enabled">Enabled</label>
+        <input id="enabled" type="checkbox">
+
+        <label for="contentVisibilityOnly">Safe mode (no DOM replacement)</label>
+        <input id="contentVisibilityOnly" type="checkbox">
+
+        <label for="aggressiveMode">Aggressive mode</label>
+        <input id="aggressiveMode" type="checkbox">
+
+        <label for="autoRestoreNearViewport">Auto restore near viewport</label>
+        <input id="autoRestoreNearViewport" type="checkbox">
+
+        <label for="debugOverlay">Debug overlay</label>
+        <input id="debugOverlay" type="checkbox">
+
+        <label for="minMessagesForVirtualization">Min messages before virtualizing</label>
+        <input id="minMessagesForVirtualization" type="number" min="10" max="500">
+
+        <label for="overscanMessages">Overscan messages kept live</label>
+        <input id="overscanMessages" type="number" min="2" max="60">
+
+        <label for="keepRecentMessages">Always keep newest messages live</label>
+        <input id="keepRecentMessages" type="number" min="2" max="60">
+
+        <label for="freezeAfterInputMs">Pause virtualization after typing (ms)</label>
+        <input id="freezeAfterInputMs" type="number" min="100" max="10000">
+
+        <label for="restoreAbovePx">Auto restore margin above viewport (px)</label>
+        <input id="restoreAbovePx" type="number" min="80" max="5000">
+
+        <label for="restoreBelowPx">Auto restore margin below viewport (px)</label>
+        <input id="restoreBelowPx" type="number" min="120" max="5000">
+
+        <label for="virtualizeAbovePx">Virtualize threshold above viewport (px)</label>
+        <input id="virtualizeAbovePx" type="number" min="300" max="10000">
+
+        <label for="virtualizeBelowPx">Virtualize threshold below viewport (px)</label>
+        <input id="virtualizeBelowPx" type="number" min="300" max="10000">
+
+        <label for="restoreBatchPerFrame">Auto restores per animation frame</label>
+        <input id="restoreBatchPerFrame" type="number" min="1" max="8">
+
+        <label for="autoRestorePinMs">Keep restored messages live for at least (ms)</label>
+        <input id="autoRestorePinMs" type="number" min="300" max="10000">
+
+        <label for="foldCodeBlocks">Collapse very large code blocks</label>
+        <input id="foldCodeBlocks" type="checkbox">
+
+        <label for="foldCodeLineCount">Collapse threshold (lines)</label>
+        <input id="foldCodeLineCount" type="number" min="40" max="1000">
+
+        <label for="codePreviewLines">Preview lines when collapsed</label>
+        <input id="codePreviewLines" type="number" min="10" max="120">
+      </div>
+      <div class="actions">
+        <button id="save">Save</button>
+        <button id="reset">Reset defaults</button>
+      </div>
+    </section>
+  </main>
+  <script src="options.js"></script>
+</body>
+</html>
