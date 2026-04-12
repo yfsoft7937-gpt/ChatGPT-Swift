@@ -46,6 +46,8 @@
     placeholderObserver: null,
     placeholderObserverConfigKey: '',
     debugEl: null,
+    debugOverlayPosition: null,
+    debugDragState: null,
     observerSuppressCount: 0,
     ignoreObserverUntil: 0,
     restoreQueue: [],
@@ -681,9 +683,95 @@
     if (state.debugEl?.isConnected) return;
     const panel = document.createElement('div');
     panel.className = 'cgwd-debug-overlay';
+    const handle = document.createElement('div');
+    handle.className = 'cgwd-debug-overlay-handle';
+    handle.innerHTML = '<span>CGWD</span><span>Drag</span>';
+    handle.addEventListener('pointerdown', startDebugDrag);
+    panel.appendChild(handle);
+    const body = document.createElement('div');
+    body.className = 'cgwd-debug-overlay-body';
+    body.dataset.cgwdDebugBody = '1';
+    panel.appendChild(body);
     document.documentElement.appendChild(panel);
     state.debugEl = panel;
     renderDebugOverlay();
+  };
+
+  const applyDebugOverlayPosition = () => {
+    if (!state.debugEl) return;
+    const pos = state.debugOverlayPosition;
+    if (!pos) {
+      state.debugEl.style.left = '';
+      state.debugEl.style.top = '';
+      state.debugEl.style.right = '';
+      state.debugEl.style.bottom = '';
+      return;
+    }
+    state.debugEl.style.left = `${Math.round(pos.left)}px`;
+    state.debugEl.style.top = `${Math.round(pos.top)}px`;
+    state.debugEl.style.right = 'auto';
+    state.debugEl.style.bottom = 'auto';
+  };
+
+  const clampDebugPosition = (left, top) => {
+    if (!state.debugEl) return { left, top };
+    const rect = state.debugEl.getBoundingClientRect();
+    const maxLeft = Math.max(8, window.innerWidth - rect.width - 8);
+    const maxTop = Math.max(8, window.innerHeight - rect.height - 8);
+    return {
+      left: clamp(left, 8, maxLeft),
+      top: clamp(top, 8, maxTop)
+    };
+  };
+
+  const startDebugDrag = (event) => {
+    if (!state.settings.debugOverlay || !state.debugEl) return;
+    if (event.button !== 0) return;
+    event.preventDefault();
+
+    const rect = state.debugEl.getBoundingClientRect();
+    state.debugOverlayPosition = {
+      left: rect.left,
+      top: rect.top
+    };
+    applyDebugOverlayPosition();
+
+    const dragState = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      startLeft: rect.left,
+      startTop: rect.top
+    };
+    state.debugDragState = dragState;
+    state.debugEl.classList.add('cgwd-debug-overlay-dragging');
+    state.debugEl.setPointerCapture?.(event.pointerId);
+
+    const onPointerMove = (moveEvent) => {
+      if (state.debugDragState !== dragState) return;
+      if (moveEvent.pointerId !== dragState.pointerId) return;
+      const next = clampDebugPosition(
+        dragState.startLeft + (moveEvent.clientX - dragState.startX),
+        dragState.startTop + (moveEvent.clientY - dragState.startY)
+      );
+      state.debugOverlayPosition = next;
+      applyDebugOverlayPosition();
+    };
+
+    const stopDragging = (upEvent) => {
+      if (state.debugDragState !== dragState) return;
+      if (upEvent.pointerId !== dragState.pointerId) return;
+      state.debugDragState = null;
+      state.debugEl?.classList.remove('cgwd-debug-overlay-dragging');
+      state.debugEl?.releasePointerCapture?.(dragState.pointerId);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', stopDragging);
+      window.removeEventListener('pointercancel', stopDragging);
+    };
+
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', stopDragging);
+    window.addEventListener('pointercancel', stopDragging);
   };
 
   const renderDebugOverlay = () => {
@@ -696,7 +784,9 @@
     }
     buildDebugOverlay();
     if (!state.debugEl) return;
-    state.debugEl.innerHTML = `
+    const body = state.debugEl.querySelector('[data-cgwd-debug-body="1"]');
+    if (!body) return;
+    body.innerHTML = `
       <div><strong>CGWD</strong> ${state.settings.enabled ? 'enabled' : 'disabled'}</div>
       <div>messages: ${state.stats.messageCount}</div>
       <div>live: ${state.stats.live} / virtual: ${state.stats.virtual}</div>
@@ -707,6 +797,7 @@
       <div>update: ${state.stats.lastUpdateMs.toFixed(1)}ms (avg ${state.stats.avgUpdateMs.toFixed(1)}ms)</div>
       <div>mode: ${state.settings.contentVisibilityOnly ? 'safe' : (state.settings.aggressiveMode ? 'aggressive' : 'balanced')}</div>
     `;
+    applyDebugOverlayPosition();
   };
 
   const refreshMetaIndex = () => {
@@ -747,6 +838,7 @@
       state.debugEl.remove();
       state.debugEl = null;
     }
+    state.debugDragState = null;
     state.pendingCodeRoots.clear();
     state.codeProcessingScheduled = false;
     state.stats = {
